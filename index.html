@@ -45,26 +45,21 @@
 
   <script>
     const API_KEY = "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";
-    const MODEL = "mistral-7b"; // You can change this to another model if needed
+    const MODEL = "mistralai/mistral-7b-instruct"; // ✅ Valid OpenRouter model
 
     async function generateWords() {
       const output = document.getElementById("output");
       output.textContent = "Generating...";
 
-      const prompt = `
-Generate 5 rows of 12 unique, real English words.
-Each row should be a space-separated line of lowercase words with no punctuation, no numbering, and no formatting — just the words.
-
-Example:
-apple mirror fire dream cloud rocket tiger river stone magic thunder tree
-      `;
+      const prompt = `Generate 5 rows of 12 unique, real English words. Each row should be a space-separated line of lowercase words with no punctuation, no numbering, and no formatting — just the words.`;
 
       try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + API_KEY,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-Title": "Word Generator App" // ✅ Required by OpenRouter
           },
           body: JSON.stringify({
             model: MODEL,
@@ -73,10 +68,10 @@ apple mirror fire dream cloud rocket tiger river stone magic thunder tree
         });
 
         const data = await response.json();
-        const text = data?.choices?.[0]?.message?.content || "No response from AI.";
 
+        const text = data?.choices?.[0]?.message?.content || "No response from AI.";
         output.textContent = text;
-        console.log("AI Response:", text);
+        console.log("Response from AI:", text);
       } catch (err) {
         output.textContent = "Error: " + err.message;
         console.error(err);
